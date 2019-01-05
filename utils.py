@@ -9,16 +9,20 @@ punc_tokens = {'!': ' <EXCLAIM> ',
  ',': ' <COMMA> ',
  '(': ' <LPAREN> ',
  ')': ' <RPAREN> ',
- '\"': ' <QUOTE> ',
+ '"': ' <QUOTE> ',
  ';': ' <SEMICOLON> ',
  '\n': ' <RETURN> ',
+ '\t': ' <TAB> ',
  '~': ' <TILDE> ',
  '-': ' <HYPHEN> ',
  '\'': ' <APOST> ',
+ ':': ' <COLON> '
 }
+
 
 def replace_punctuation(dataset):
     return [''.join([punc_tokens.get(char, char) for char in seq]) for seq in dataset]
+
 
 def extract_ngrams(sequence, n=2):
     """ Extract n-grams from a sequence """
@@ -78,11 +82,12 @@ def get_tokens(dataset):
     vocab_freqs = {word: count/total_words for word, count in vocab_counter.items()}
     vocab_sorted = sorted(vocab, key=vocab_freqs.get, reverse=True)
 
-    # Starting at 2 here to reserve 0 and 1 for SOS and EOS tokens
-    vocab_to_int = dict(zip(vocab_sorted, range(2, len(vocab)+2)))
+    # Starting at 3 here to reserve special tokens
+    vocab_to_int = dict(zip(vocab_sorted, range(3, len(vocab)+3)))
     
-    vocab_to_int["<SOS>"] = 0
-    vocab_to_int["<EOS>"] = 1
+    vocab_to_int["<SOS>"] = 0 # Start of sentence
+    vocab_to_int["<EOS>"] = 1 # End of sentence
+    vocab_to_int["<UNK>"] = 2 # Unknown word
     
     int_to_vocab = {val: key for key, val in vocab_to_int.items()}
     
